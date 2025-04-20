@@ -1,3 +1,4 @@
+import { BrowserRoutes, Routes, Route } from "react-router-dom";
 import "./index.css";
 import SearchPage from "./Pages/SearchPage";
 
