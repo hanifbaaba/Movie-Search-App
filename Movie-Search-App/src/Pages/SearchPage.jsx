@@ -21,27 +21,43 @@ export default function SearchPage() {
     setMovie(data.Search);
   }
 
-  console.log(movie);
   return (
-    <div className="movie-container">
-      <input
-        type="search"
-        placeholder="Search For Movies"
-        onChange={(e) => setSearch(e.target.value)}
-        value={search}
-        className="input-movie"
-      />
-      <button onClick={getMovieData}> Search</button>
-      <div className="movie-card">
+    <div>
+      <div className="search-bar">
+        <input
+          type="search"
+          placeholder="Search For Movies"
+          onChange={(e) => setSearch(e.target.value)}
+          value={search}
+          className="input-movie"
+        />
+        <button onClick={getMovieData}>Search</button>
+      </div>
+
+      <div className="movie-container">
         {movie?.map((m) => (
-          <div key={m.imdbID}>
-            <img src={m.Poster} />
+          <div className="movie-card" key={m.imdbID}>
+            {/* <img src={m.Poster} alt={`${m.Title} poster`} /> */}
+            <img
+              src={
+                m.Poster !== "N/A"
+                  ? m.Poster
+                  : "https://via.placeholder.com/200x300?text=No+Image"
+              }
+              alt={`${m.Title} poster`}
+            />
+
             <h2>{m.Title}</h2>
             <p>{m.Year}</p>
           </div>
         ))}
       </div>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {error && (
+        <p className="error" style={{ color: "red" }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }
