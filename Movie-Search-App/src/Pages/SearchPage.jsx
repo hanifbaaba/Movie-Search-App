@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+import { useState } from "react";
 export default function SearchPage() {
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
@@ -33,23 +35,23 @@ export default function SearchPage() {
         />
         <button onClick={getMovieData}>Search</button>
       </div>
-
       <div className="movie-container">
         {movie?.map((m) => (
-          <div className="movie-card" key={m.imdbID}>
-            {/* <img src={m.Poster} alt={`${m.Title} poster`} /> */}
-            <img
-              src={
-                m.Poster !== "N/A"
-                  ? m.Poster
-                  : "https://via.placeholder.com/200x300?text=No+Image"
-              }
-              alt={`${m.Title} poster`}
-            />
+          <Link to={`/movie/${m.imdbID}`} key={m.imdbID}>
+            <div className="movie-card" key={m.imdbID}>
+              <img
+                src={
+                  m.Poster !== "N/A"
+                    ? m.Poster
+                    : "https://via.placeholder.com/200x300?text=No+Image"
+                }
+                alt={`${m.Title} poster`}
+              />
 
-            <h2>{m.Title}</h2>
-            <p>{m.Year}</p>
-          </div>
+              <h2>{m.Title}</h2>
+              <p>{m.Year}</p>
+            </div>
+          </Link>
         ))}
       </div>
 
