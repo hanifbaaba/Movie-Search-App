@@ -23,12 +23,10 @@ export default function MovieDetails() {
   if (movie === null) {
     return <p>Loading movie....</p>;
   } else {
-    // movieData();
   }
 
   return (
     <div>
-      Movie details component
       <img
         src={
           movie.Poster !== "N/A"
@@ -41,7 +39,7 @@ export default function MovieDetails() {
       <p>{movie.Genre}</p>
       <p>{movie.Released}</p>
       <p>{movie.Runtime}</p>
-      <button onClick={() => navigate("/")}>← Back</button>
+      <button onClick={() => navigate("/")}>← Close</button>
     </div>
   );
 }
