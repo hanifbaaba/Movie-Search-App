@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-import { useState } from "react";
 export default function SearchPage() {
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
@@ -15,81 +15,94 @@ export default function SearchPage() {
       setError("Please type at least 3 characters");
       return;
     }
-    const res = await fetch(API_URL);
 
-    if (!res.ok) {
-      throw new Error("Couldn't find movie details");
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("Couldn't find movie details");
+
+      const data = await res.json();
+      if (!data.Search) {
+        setError("No results found");
+        setMovie([]);
+        return;
+      }
+
+      const detailedMovies = await Promise.all(
+        data.Search.map(async (movie) => {
+          const res = await fetch(
+            `https://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}`
+          );
+          return await res.json();
+        })
+      );
+
+      setMovie(detailedMovies);
+      setError("");
+    } catch (err) {
+      setError(err.message);
     }
-    const data = await res.json();
-    if (!data.Search) {
-      setError("No results found");
-      setMovie([]);
-      return;
-    }
-    const detailedMovies = await Promise.all(
-      data.Search.map(async (movie) => {
+  }
+
+  useEffect(() => {
+    async function fetchDefaultMovies() {
+      try {
         const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}`
+          `https://www.omdbapi.com/?apikey=${API_KEY}&s=batman`
         );
-        return await res.json();
-      })
-    );
+        const data = await res.json();
+        if (data.Search) {
+          const detailedMovies = await Promise.all(
+            data.Search.map(async (movie) => {
+              const res = await fetch(
+                `https://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}`
+              );
+              return await res.json();
+            })
+          );
 
-    setMovie(detailedMovies);
-    setError("");
-  }
-  {
-    // setMovie(data.Search);
-  }
+          setMovie(detailedMovies);
+          setError("");
+        }
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+    fetchDefaultMovies();
+  }, [API_KEY]);
+
   const genres = [
     "Action",
     "Adventure",
-
     "Animation",
-
     "Biography",
-
-    " Comedy",
-
-    " Crime",
-
+    "Comedy",
+    "Crime",
     "Documentary",
-
-    " Drama",
-
-    " Family",
-
-    " Fantasy",
-
-    " History",
-
+    "Drama",
+    "Family",
+    "Fantasy",
+    "History",
     "Horror",
-
     "Music",
-
-    " Musical",
-
+    "Musical",
     "Mystery",
-
     "Romance",
-
-    " Sci-Fi",
-
-    " Sport",
-
+    "Sci-Fi",
+    "Sport",
     "Thriller",
-
     "War",
-
     "Western",
   ];
+
   const filteredMovies =
     selectedGenre === ""
       ? movie
       : movie.filter(
           (m) =>
             m.Type === "movie" &&
-            m.Genre?.toLowerCase().includes(selectedGenre.toLowerCase())
+            m.Genre?.split(", ")
+              .map((g) => g.toLowerCase())
+              .includes(selectedGenre.toLowerCase())
         );
 
   return (
@@ -116,26 +129,44 @@ export default function SearchPage() {
           value={search}
           className="input-movie"
         />
-        <button onClick={getMovieData}>Search</button>
+        <button onClick={getMovieData} disabled={search.length <= 2}>
+          Search
+        </button>
       </div>
-      <div className="movie-container">
-        {movie?.map((m) => (
-          <Link to={`/movie/${m.imdbID}`} key={m.imdbID}>
-            <div className="movie-card" key={m.imdbID}>
-              <img
-                src={
-                  m.Poster !== "N/A"
-                    ? m.Poster
-                    : "https://via.placeholder.com/200x300?text=No+Image"
-                }
-                alt={`${m.Title} poster`}
-              />
 
-              <h2>{m.Title}</h2>
-              <p>{m.Year}</p>
-            </div>
-          </Link>
-        ))}
+      <div className="movie-container">
+        {filteredMovies.map((m) => {
+          const rating = Number(m.imdbRating);
+          const starCount = !isNaN(rating) ? Math.round(rating / 2) : 0;
+
+          return (
+            <Link to={`/movie/${m.imdbID}`} key={m.imdbID}>
+              <div className="movie-card">
+                <img
+                  src={
+                    m.Poster !== "N/A"
+                      ? m.Poster
+                      : "https://via.placeholder.com/200x300?text=No+Image"
+                  }
+                  alt={`${m.Title} poster`}
+                  className="movie-image"
+                />
+
+                <h2>{m.Title}</h2>
+                <p>{m.Year}</p>
+                <p>
+                  ⭐{"⭐".repeat(starCount)}{" "}
+                  <span style={{ fontSize: "0.9rem", color: "gray" }}>
+                    ({m.imdbRating}/10)
+                  </span>
+                </p>
+                <p>{m.Director}</p>
+                <p>{m.Language}</p>
+                <p>{m.Country}</p>
+              </div>
+            </Link>
+          );
+        })}
       </div>
 
       {error && (
