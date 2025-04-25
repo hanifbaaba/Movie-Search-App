@@ -1,109 +1,197 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background-color: #f8f8f8;
+  color: #333;
+}
+
 .title-name {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 20px 0;
 }
 
-.movie-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.search-page-container {
   padding: 20px;
-  background-color: #f4f4f4;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.movie-image {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
-.input-movie {
+.search-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 90%;
+  max-width: 600px;
+}
+
+.genre-select,
+.search-input,
+.search-button {
   padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  width: 80%;
-  max-width: 400px;
-}
-
-button {
-  height: 35px;
-  padding: 0 15px;
-  border: none;
-  background-color: #4444aa;
-  color: white;
   border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
-button:hover {
-  background-color: #333388;
+.genre-select {
+  flex-grow: 1;
+}
+
+.search-input {
+  flex-grow: 3;
+}
+
+.search-button {
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #4cae4c;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  width: 95%;
+  max-width: 1200px;
+}
+
+.movie-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .movie-card {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  width: 90%;
-  max-width: 900px;
-}
-
-.movie-card > div {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  transition: transform 0.2s ease-in-out;
 }
 
-.movie-card img {
+.movie-card:hover {
+  transform: scale(1.03);
+}
+
+.movie-poster {
   width: 100%;
   height: auto;
   display: block;
   border-bottom: 1px solid #eee;
 }
 
-.movie-card h2 {
-  padding: 10px;
-  font-size: 1.2rem;
-  margin-bottom: 5px;
+.movie-info {
+  padding: 15px;
   text-align: center;
+}
+
+.movie-title {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
   color: #333;
 }
 
-.movie-card p {
-  padding: 0 10px 10px;
-  /* font-size: 0.9rem; */
+.movie-year,
+.movie-rating,
+.movie-director {
+  font-size: 0.9rem;
   color: #666;
-  text-align: center;
-  /* .movie-card p { */
-  font-size: 1rem;
-  /* } */
+  margin-bottom: 3px;
 }
 
-p[style*="color: red"] {
-  margin-top: 15px;
+.rating-value {
+  color: #007bff;
   font-weight: bold;
 }
 
-.search-bar {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px 0;
+.error-message {
+  color: red;
+  margin-top: 20px;
+  font-weight: bold;
 }
 
-.movie-image {
+.movie-details-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  gap: 30px;
+  padding: 30px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 90%;
+  max-width: 900px;
+  align-items: flex-start;
+}
+
+.movie-details-poster {
+  max-width: 300px;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.movie-details-info {
+  flex-grow: 1;
+}
+
+.movie-details-title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #555;
+  margin-right: 5px;
+}
+
+.movie-details-plot {
+  line-height: 1.6;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.movie-details-genre,
+.movie-details-released,
+.movie-details-runtime,
+.movie-details-director,
+.movie-details-actors,
+.movie-details-language,
+.movie-details-country,
+.movie-details-rating {
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.movie-details-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.movie-details-button:hover {
+  background-color: #0056b3;
+}
+
+.loading-movie {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #777;
 }

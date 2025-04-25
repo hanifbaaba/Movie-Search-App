@@ -5,7 +5,7 @@ export default function SearchPage() {
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [movie, setMovie] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState("Action");
+  const [selectedGenre, setSelectedGenre] = useState("");
 
   const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
   const API_URL = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${search}`;
@@ -71,6 +71,7 @@ export default function SearchPage() {
   }, [API_KEY]);
 
   const genres = [
+    "",
     "Action",
     "Adventure",
     "Animation",
@@ -106,18 +107,19 @@ export default function SearchPage() {
         );
 
   return (
-    <div>
+    <div className="search-page-container">
       <div className="search-bar">
         <select
           name="genre"
           id="genre"
           value={selectedGenre}
           onChange={(e) => setSelectedGenre(e.target.value)}
+          className="genre-select"
         >
-          <option value="">--Select a Genre--</option>
+          <option value="">-- All Genres --</option>
           {genres.map((genre, index) => (
             <option key={index} value={genre}>
-              {genre}
+              {genre || "All Genres"}
             </option>
           ))}
         </select>
@@ -127,20 +129,28 @@ export default function SearchPage() {
           placeholder="Search For Movies"
           onChange={(e) => setSearch(e.target.value)}
           value={search}
-          className="input-movie"
+          className="search-input"
         />
-        <button onClick={getMovieData} disabled={search.length <= 2}>
+        <button
+          onClick={getMovieData}
+          disabled={search.length <= 2}
+          className="search-button"
+        >
           Search
         </button>
       </div>
 
-      <div className="movie-container">
+      <div className="movie-grid">
         {filteredMovies.map((m) => {
           const rating = Number(m.imdbRating);
           const starCount = !isNaN(rating) ? Math.round(rating / 2) : 0;
 
           return (
-            <Link to={`/movie/${m.imdbID}`} key={m.imdbID}>
+            <Link
+              to={`/movie/${m.imdbID}`}
+              key={m.imdbID}
+              className="movie-link"
+            >
               <div className="movie-card">
                 <img
                   src={
@@ -149,31 +159,24 @@ export default function SearchPage() {
                       : "https://via.placeholder.com/200x300?text=No+Image"
                   }
                   alt={`${m.Title} poster`}
-                  className="movie-image"
+                  className="movie-poster"
                 />
-
-                <h2>{m.Title}</h2>
-                <p>{m.Year}</p>
-                <p>
-                  ⭐{"⭐".repeat(starCount)}{" "}
-                  <span style={{ fontSize: "0.9rem", color: "gray" }}>
-                    ({m.imdbRating}/10)
-                  </span>
-                </p>
-                <p>{m.Director}</p>
-                <p>{m.Language}</p>
-                <p>{m.Country}</p>
+                <div className="movie-info">
+                  <h2 className="movie-title">{m.Title}</h2>
+                  <p className="movie-year">{m.Year}</p>
+                  <p className="movie-rating">
+                    ⭐{"⭐".repeat(starCount)}{" "}
+                    <span className="rating-value">({m.imdbRating}/10)</span>
+                  </p>
+                  <p className="movie-director">Dir: {m.Director}</p>
+                </div>
               </div>
             </Link>
           );
         })}
       </div>
 
-      {error && (
-        <p className="error" style={{ color: "red" }}>
-          {error}
-        </p>
-      )}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }
